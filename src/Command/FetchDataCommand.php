@@ -46,8 +46,7 @@ class FetchDataCommand extends Command
     {
         $this
             ->setDescription('Fetch data from iTunes Movie Trailers')
-            ->addArgument('source', InputArgument::OPTIONAL, 'Overwrite source')
-        ;
+            ->addArgument('source', InputArgument::OPTIONAL, 'Overwrite source');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -89,13 +88,18 @@ class FetchDataCommand extends Command
         if (!property_exists($xml, 'channel')) {
             throw new RuntimeException('Could not find \'channel\' element in feed');
         }
-        foreach ($xml->channel->item as $item) {
+        $toFlush = (array) $xml->channel;
+        usort($toFlush['item'], function ($a, $b) {
+            return strtotime((string) $b->pubDate) - strtotime((string) $a->pubDate);
+        });
+        $toFlush = array_slice($toFlush['item'], 0, 10);
+        foreach ($toFlush as $item) {
             $trailer = $this->getMovie((string) $item->title)
                 ->setTitle((string) $item->title)
                 ->setDescription((string) $item->description)
                 ->setLink((string) $item->link)
-                ->setPubDate($this->parseDate((string) $item->pubDate))
-            ;
+                ->setImage($item->link . '/images/background.jpg')
+                ->setPubDate($this->parseDate((string) $item->pubDate));
 
             $this->doctrine->persist($trailer);
         }

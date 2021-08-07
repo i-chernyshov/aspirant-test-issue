@@ -1,6 +1,11 @@
-main:
+movieShow:
   method: 'get'
-  path: ~
+  path: movies/{id:[0-9]+}
+  controller: App\Controller\HomeController
+  action: show
+
+movieIndex:
+  method: 'get'
+  path: movies
   controller: App\Controller\HomeController
   action: index
-

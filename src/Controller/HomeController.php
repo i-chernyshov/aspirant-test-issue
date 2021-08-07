@@ -24,7 +24,7 @@ class HomeController
     {
         try {
             $data = $this->twig->render('home/index.html.twig', [
-                'trailers' => $this->fetchData(),
+                'movies' => $this->fetchData(),
             ]);
         } catch (\Exception $e) {
             throw new HttpBadRequestException($request, $e->getMessage(), $e);
@@ -41,5 +41,20 @@ class HomeController
             ->findAll();
 
         return new ArrayCollection($data);
+    }
+
+    public function show(ServerRequestInterface $request, ResponseInterface $response, $params): ResponseInterface
+    {
+        try {
+            $data = $this->twig->render('home/show.html.twig', [
+                'movie' => $this->em->getRepository(Movie::class)->find($params['id']),
+            ]);
+        } catch (\Exception $e) {
+            throw new HttpBadRequestException($request, $e->getMessage(), $e);
+        }
+
+        $response->getBody()->write($data);
+
+        return $response;
     }
 }

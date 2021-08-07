@@ -1,0 +1,18 @@
+{% extends 'main.html.twig' %}
+
+{% block title %}{{ movie.title }}{% endblock %}
+
+{% block content %}
+    <article class="movie">
+        <div class="container">
+            <a href="/movies">Go back</a>
+            <h1>{{ movie.title }}</h1>
+            <img src="{{ movie.image }}" alt="{{ movie.title }}">
+            <p>
+                {{ movie.description }}
+                <time datetime="{{ movie.pubDate.format('d.m.Y') }}">{{ movie.pubDate.format('d.m.Y') }}</time>
+            </p>
+            <a href="{{ movie.link }}">Go source</a>
+        </div>
+    </article>
+{% endblock %}
