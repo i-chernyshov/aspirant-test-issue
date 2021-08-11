@@ -32,6 +32,7 @@
     "friendsofphp/php-cs-fixer": "^3.0.x-dev",
     "phpmetrics/phpmetrics": "^2.4",
     "phpunit/phpunit": "^9.5",
+    "symfony/maker-bundle": "3.x-dev",
     "symfony/var-dumper": "^5.2",
     "vimeo/psalm": "^4.4"
   },

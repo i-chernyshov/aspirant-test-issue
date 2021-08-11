@@ -11,7 +11,7 @@
                     <article>
                         <img src="{{ movie.image }}" alt="{{ movie.title }}">
                         <h2>{{ movie.title }}</h2>
-                        <a href="/movies/{{ movie.id }}">Read More &rarr;</a>
+                        <a href="{{ router.urlFor('movieShow', {"id": movie.id}) }}">Read More &rarr;</a>
                         <time datetime="{{ movie.pubDate.format('d.m.Y') }}">{{ movie.pubDate.format('d.m.Y') }}</time>
                     </article>
                 {% endfor %}

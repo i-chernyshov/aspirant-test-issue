@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use App\Entity\Movie;
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -12,19 +11,24 @@ use Slim\Exception\HttpBadRequestException;
 use Slim\Interfaces\RouteCollectorInterface;
 use Twig\Environment;
 
-class HomeController
+class MovieController
 {
     public function __construct(
         private RouteCollectorInterface $routeCollector,
         private Environment $twig,
         private EntityManagerInterface $em
-    ) {}
+    ) {
+    }
 
+    /**
+     * @throws HttpBadRequestException
+     */
     public function index(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
     {
         try {
-            $data = $this->twig->render('home/index.html.twig', [
-                'movies' => $this->fetchData(),
+            $data = $this->twig->render('movie/index.html.twig', [
+                'movies' => new ArrayCollection($this->em->getRepository(Movie::class)->findAll()),
+                'router' => $this->routeCollector->getRouteParser(),
             ]);
         } catch (\Exception $e) {
             throw new HttpBadRequestException($request, $e->getMessage(), $e);
@@ -35,19 +39,15 @@ class HomeController
         return $response;
     }
 
-    protected function fetchData(): Collection
-    {
-        $data = $this->em->getRepository(Movie::class)
-            ->findAll();
-
-        return new ArrayCollection($data);
-    }
-
+    /**
+     * @throws HttpBadRequestException
+     */
     public function show(ServerRequestInterface $request, ResponseInterface $response, $params): ResponseInterface
     {
         try {
-            $data = $this->twig->render('home/show.html.twig', [
+            $data = $this->twig->render('movie/show.html.twig', [
                 'movie' => $this->em->getRepository(Movie::class)->find($params['id']),
+                'router' => $this->routeCollector->getRouteParser(),
             ]);
         } catch (\Exception $e) {
             throw new HttpBadRequestException($request, $e->getMessage(), $e);
